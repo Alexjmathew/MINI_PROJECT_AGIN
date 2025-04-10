@@ -4,6 +4,7 @@ import google.generativeai as genai
 from nlp import offline_processor, get_pretrained_response
 import logging
 from datetime import datetime
+import os  # Add this import for os module
 
 # Initialize configuration
 Config.validate_config()
