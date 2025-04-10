@@ -9,29 +9,63 @@ document.addEventListener('DOMContentLoaded', function() {
     function addMessage(text, isUser, source) {
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+        
+        // Create message content container
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'message-content';
 
         // Format code blocks if present
         if (!isUser && text.includes('```')) {
             const parts = text.split('```');
             let formatted = '';
             for (let i = 0; i < parts.length; i++) {
-                formatted += i % 2 === 1
-                    ? `<pre><code>${parts[i]}</code></pre>`
-                    : parts[i].replace(/\n/g, '<br>');
+                if (i % 2 === 1) {
+                    // Check if there's a language specified
+                    const codeContent = parts[i].trim();
+                    const firstLineBreak = codeContent.indexOf('\n');
+                    
+                    if (firstLineBreak > 0) {
+                        const possibleLang = codeContent.substring(0, firstLineBreak).trim();
+                        // If first line is a language name
+                        if (possibleLang && !possibleLang.includes(' ')) {
+                            const code = codeContent.substring(firstLineBreak + 1);
+                            formatted += `<pre><code class="language-${possibleLang}">${code}</code></pre>`;
+                        } else {
+                            formatted += `<pre><code>${codeContent}</code></pre>`;
+                        }
+                    } else {
+                        formatted += `<pre><code>${codeContent}</code></pre>`;
+                    }
+                } else {
+                    formatted += parts[i].replace(/\n/g, '<br>');
+                }
             }
-            messageDiv.innerHTML = formatted;
+            contentDiv.innerHTML = formatted;
         } else {
-            messageDiv.innerHTML = text;
+            contentDiv.innerHTML = text.replace(/\n/g, '<br>');
         }
+        
+        messageDiv.appendChild(contentDiv);
 
+        // Add message metadata
+        const metaDiv = document.createElement('div');
+        metaDiv.className = 'message-meta';
+        
+        // Add timestamp
+        const timeSpan = document.createElement('span');
+        timeSpan.className = 'message-time';
+        timeSpan.textContent = 'Just now';
+        metaDiv.appendChild(timeSpan);
+        
         // Add source if provided
         if (source && !isUser) {
             const sourceSpan = document.createElement('span');
             sourceSpan.className = 'message-source';
-            sourceSpan.textContent = ` (via ${source})`;
-            messageDiv.appendChild(sourceSpan);
+            sourceSpan.textContent = `via ${source}`;
+            metaDiv.appendChild(sourceSpan);
         }
-
+        
+        messageDiv.appendChild(metaDiv);
         chatBox.appendChild(messageDiv);
         chatBox.scrollTop = chatBox.scrollHeight;
     }
@@ -52,13 +86,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const data = await response.json();
             if (data.error) {
-                addMessage(`Error: ${data.error}`, false);
+                addMessage(`Error: ${data.error}`, false, 'error');
             } else {
                 addMessage(data.response, false, data.source);
             }
         } catch (error) {
-            // Fixed: Use error.message instead of undefined data.error
-            addMessage(`Error: ${error.message}`, false);
+            addMessage(`Error: ${error.message}`, false, 'error');
         } finally {
             // Hide typing indicator
             typingIndicator.style.display = 'none';
