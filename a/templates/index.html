@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Chat - PyTutor{% endblock %}
+
+{% block content %}
+<div class="chat-container">
+    <div class="chat-header">
+        <h2>Python Tutor Chat</h2>
+        <p>Ask me anything about Python programming</p>
+    </div>
+
+    <div class="chat-box" id="chat-box">
+        <div class="message bot-message">
+            <div class="message-content">
+                Hello! I'm PyTutor, your Python programming assistant. I can help you with:
+                <ul>
+                    <li>Learning Python concepts</li>
+                    <li>Debugging your code</li>
+                    <li>Explaining errors</li>
+                    <li>Generating code examples</li>
+                </ul>
+                How can I help you today?
+            </div>
+            <div class="message-meta">
+                <span class="message-time">Just now</span>
+                <span class="message-source">System</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="chat-input">
+        <textarea id="user-input" placeholder="Type your Python question here..." rows="2"></textarea>
+        <button id="send-button">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+            </svg>
+        </button>
+    </div>
+
+    <div class="quick-actions">
+        <h3>Quick Questions:</h3>
+        <div class="quick-buttons">
+            <button class="quick-btn" data-question="How do I create a function in Python?">Functions</button>
+            <button class="quick-btn" data-question="Explain loops in Python">Loops</button>
+            <button class="quick-btn" data-question="What are Python lists and how to use them?">Lists</button>
+            <button class="quick-btn" data-question="How to debug Python code?">Debugging</button>
+        </div>
+    </div>
+</div>
+
+<div class="typing-indicator" id="typing-indicator">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Chat functionality here (same as in script.js)
+    // This can be moved to static/js/script.js if preferred
+});
+</script>
+{% endblock %}
